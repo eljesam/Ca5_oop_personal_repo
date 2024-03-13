@@ -2,7 +2,7 @@ package org.example;
 import java.sql.*;
 public class Books {
     public void start(){
-        String url = "jdbc:myqsl://localhost/";
+        String url = "jdbc:mysql://localhost/";
         String dbName = "bookshop";
         String userName = "root";
         String password = "";
