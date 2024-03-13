@@ -18,10 +18,11 @@ public class Books {
     public void start(){
         String url = "jdbc:mysql://localhost/";
         String dbName = "bookshop";
+        String fullUrl = url + dbName;
         String userName = "root";
         String password = "";
 
-        try(Connection conn = DriverManager.getConnection(url + dbName, userName, password))
+        try(Connection conn = DriverManager.getConnection(fullUrl, userName, password))
         {
 
             Statement stmt = conn.createStatement();
