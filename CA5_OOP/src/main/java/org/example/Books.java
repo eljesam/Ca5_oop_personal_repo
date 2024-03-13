@@ -25,6 +25,16 @@ public class Books {
         {
 
             Statement stmt = conn.createStatement();
+            String sql = "SELECT * FROM books";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while(rs.next()){
+                int id = rs.getInt("id");
+                String title = rs.getString("title");
+                String author = rs.getString("author");
+                double price = rs.getDouble("price");
+                System.out.println("ID: " + id + ", Title: " + title + ", Author: " + author + ", Price: " + price);
+            }
 
 
 
