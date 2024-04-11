@@ -2,6 +2,14 @@ package org.example;
 import java.sql.*;
 
 /*
+    CREATE DATABASE bookshop;
+    USE bookshop;
+    CREATE TABLE books (
+        id INT PRIMARY KEY,
+        title VARCHAR(255),
+        author VARCHAR(255),
+        price DECIMAL(5, 2)
+    );
 INSERT INTO books (id, title, author, price) VALUES
     (1, 'The Da Vinci Code', 'Dan Brown', 15.00),
     (2, 'Le Petit Prince', 'Antoine de Saint-Exupery', 29.00),
@@ -16,13 +24,11 @@ INSERT INTO books (id, title, author, price) VALUES
  */
 public class Books {
     public void start(){
-        String url = "jdbc:mysql://localhost/";
-        String dbName = "bookshop";
-        String fullUrl = url + dbName;
+        String url = "jdbc:mysql://localhost:3306/bookshop";
         String userName = "root";
         String password = "";
 
-        try(Connection conn = DriverManager.getConnection(fullUrl, userName, password))
+        try(Connection conn = DriverManager.getConnection(url, userName, password))
         {
 
             Statement stmt = conn.createStatement();
@@ -33,7 +39,7 @@ public class Books {
                 int id = rs.getInt("id");
                 String title = rs.getString("title");
                 String author = rs.getString("author");
-                double price = rs.getDouble("price");
+                float price = rs.getFloat("price");
                 System.out.println("ID: " + id + ", Title: " + title + ", Author: " + author + ", Price: " + price);
             }
 
@@ -45,6 +51,38 @@ public class Books {
             //error message
             System.out.println("Error: " + e.getMessage());
             e.printStackTrace();
+
+        }
+    }
+
+
+
+    public void getBookByID(int id){
+        String url = "jdbc:mysql://localhost:3306/bookshop";
+        String userName = "root";
+        String password = "";
+
+        try (Connection conn = DriverManager.getConnection(url, userName, password)) {
+            String sql = "SELECT * FROM books WHERE id = ?";
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, id);
+                ResultSet rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    int bookId = rs.getInt("id");
+                    String title = rs.getString("title");
+                    String author = rs.getString("author");
+                    float price = rs.getFloat("price");
+                    System.out.println("Book found:");
+                    System.out.println("ID: " + bookId + ", Title: " + title + ", Author: " + author + ", Price: " + price);
+                } else {
+                    System.out.println("No book found with ID: " + id);
+                }
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+            e.printStackTrace(); //
 
         }
     }
