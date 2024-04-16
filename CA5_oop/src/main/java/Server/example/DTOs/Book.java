@@ -1,4 +1,4 @@
-package DTOs;
+package Server.example.DTOs;
 
 import java.util.Objects;
 

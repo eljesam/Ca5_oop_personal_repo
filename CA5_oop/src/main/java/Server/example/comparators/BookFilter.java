@@ -1,5 +1,5 @@
-package comparators;
-import DTOs.Book;
+package Server.example.comparators;
+import Server.example.DTOs.Book;
 import java.util.Comparator;
 
 public class BookFilter implements Comparator<Book> {
