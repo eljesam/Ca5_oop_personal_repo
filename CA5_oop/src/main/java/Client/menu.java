@@ -46,7 +46,7 @@ import java.util.Scanner;
                 Scanner consoleInput = new Scanner(System.in);
                 boolean continueRunning = true;
                 while(continueRunning) {
-                    System.out.println("Valid commands are: \"display all\", \"display <id>\", \"add book\" ,\"quit\"");
+                    System.out.println("Valid commands are: \"display all\", \"display <id>\", \"add book\" ,\"delete book\",\"quit\"");
                     System.out.print("Please enter a command: ");
                     String userInput = consoleInput.nextLine();
 
@@ -87,6 +87,13 @@ import java.util.Scanner;
 
                         String response = in.readLine();  // Read the response from the server
                         System.out.println("Response from server: " + response);
+                    }
+                    if (userInput.equalsIgnoreCase("delete book")) {
+                        System.out.print("Enter the ID of the book to delete: ");
+                        int id = consoleInput.nextInt(); consoleInput.nextLine(); // Consumes newline
+                        out.println("delete book " + id);  // Send command to server
+                        String response = in.readLine();  // Read response from server
+                        System.out.println("Received from server: " + response);
                     }
 
                     else {
