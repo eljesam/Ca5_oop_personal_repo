@@ -45,9 +45,10 @@ import Server.example.DTOs.Book;
 import Server.example.Exceptions.DaoException;
 
 
+
 public class BookStore {
     public static UserDaoInterface userDao = new MySqlBooksDao();
-    final int SERVER_PORT_NUMBER = 8888;  // could be any port from 1024 to 49151 (that doesn't clash with other Apps)
+    final int SERVER_PORT_NUMBER = 8888;
 
     public static void main(String[] args) throws DaoException {
         BookStore server = new BookStore();
@@ -55,9 +56,9 @@ public class BookStore {
         Scanner input = new Scanner(System.in);
         int choice = input.nextInt();
         if (choice == 1) {
-            server.runMenu();  // Run the server management menu directly
+            server.runMenu();
         } else {
-            server.start();  // Start the normal server operation
+            server.start();
         }
         input.close();
     }
@@ -72,7 +73,7 @@ public class BookStore {
         try {
             serverSocket = new ServerSocket(SERVER_PORT_NUMBER);
             System.out.println("Server has started.");
-            int clientNumber = 0;  // a number sequentially allocated to each new client (for identification purposes here)
+            int clientNumber = 0;
 
             while (true) {
                 System.out.println("Server: Listening/waiting for connections on port ..." + SERVER_PORT_NUMBER);
@@ -84,8 +85,6 @@ public class BookStore {
                 System.out.println("Server: Port number of remote client: " + clientSocket.getPort());
                 System.out.println("Server: Port number of the socket used to talk with client " + clientSocket.getLocalPort());
 
-                // create a new ClientHandler for the requesting client, passing in the socket and client number,
-                // pass the handler into a new thread, and start the handler running in the thread.
                 Thread t = new Thread(new ClientHandler(clientSocket, clientNumber));
                 t.start();
 
@@ -111,6 +110,11 @@ public class BookStore {
         }
         System.out.println("Server: Server exiting, Goodbye!");
     }
+    /**
+     * Main author: Wiktor Teter
+     * Other contributors: Eljesa Mesi
+     *
+     */
     private void runMenu() throws DaoException {
         Scanner input = new Scanner(System.in);
         int choice;
@@ -144,7 +148,7 @@ public class BookStore {
                 case 4:
                     System.out.println("Please enter the book ID: ");
                     int bookID3 = input.nextInt();
-                    input.nextLine(); // Consume newline character
+                    input.nextLine();
                     System.out.println("Please enter the book title: ");
                     String title = input.nextLine();
                     System.out.println("Please enter the book author: ");
@@ -156,7 +160,7 @@ public class BookStore {
                 case 5:
                     System.out.println("Please enter the book ID: ");
                     int bookID4 = input.nextInt();
-                    input.nextLine(); // Consume newline character
+                    input.nextLine();
                     System.out.println("Please enter the book title: ");
                     String title2 = input.nextLine();
                     System.out.println("Please enter the book author: ");
@@ -168,7 +172,7 @@ public class BookStore {
                 case 6:
                     System.out.println("Please enter the book ID: ");
                     int bookID5 = input.nextInt();
-                    input.nextLine(); // Consume newline character
+                    input.nextLine();
                     System.out.println("Please enter the book title: ");
                     String title3 = input.nextLine();
                     System.out.println("Please enter the book author: ");
@@ -195,64 +199,100 @@ public class BookStore {
             }
         } while (choice != 0);
     }
-    private static void findAllBooks() throws DaoException {
-        List<Book> books = BookStore.userDao.findAllBooks();
+    /**
+     * Main author: Wiktor Teter
+     * Other contributors: Eljesa Mesi
+     *
+     */
+    public static List<Book> findAllBooks() throws DaoException {
+        List<Book> books = userDao.findAllBooks();
         for (Book book : books) {
             System.out.println(book);
         }
 
 
+        return books;
     }
-
-    private static void getBookByID(int id) throws DaoException {
-        Book book = BookStore.userDao.getBookByID(id);
+    /**
+     * Main author: Eljesa Mesi
+     * Other contributors: Wiktor Teter
+     *
+     */
+    public static Book getBookByID(int id) throws DaoException {
+        Book book = userDao.getBookByID(id);
         System.out.println(book);
+        return book;
     }
-
-    private static void deleteBookByID(int id) {
+    /**
+     * Main author: Eljesa Mesi
+     * Other contributors: Wiktor Teter
+     *
+     */
+    public static void deleteBookByID(int id) {
         Book book = null;
         try {
-            book = BookStore.userDao.deleteBookByID(id);
+            book = userDao.deleteBookByID(id);
         } catch (DaoException e) {
             throw new RuntimeException(e);
         }
         System.out.println(book);
     }
-
-    private static void insertBook(int id, String title, String author, float price) {
+    /**
+     * Main author: Eljesa Mesi
+     * Other contributors: Wiktor Teter
+     *
+     */
+    public static void insertBook(int id, String title, String author, float price) {
         try {
-            BookStore.userDao.insertBook(id, title, author, price);
+            userDao.insertBook(id, title, author, price);
         } catch (DaoException e) {
             throw new RuntimeException(e);
         }
     }
-
-    private static void updateBookByID(int id, String title, String author, float price) {
+    /**
+     * Main author: Eljesa Mesi
+     * Other contributors: Wiktor Teter
+     *
+     */
+    public static void updateBookByID(int id, String title, String author, float price) {
         try {
-            BookStore.userDao.updateBookByID(id, title, author, price);
+            userDao.updateBookByID(id, title, author, price);
         } catch (DaoException e) {
             throw new RuntimeException(e);
         }
     }
-
-    private static void getBookByFilter(Book filter) {
-        List<Book> books = BookStore.userDao.getBookByFilter(filter);
+    /**
+     * Main author: Eljesa Mesi
+     * Other contributors: Wiktor Teter
+     *
+     */
+    public static List<Book> getBookByFilter(Book filter) {
+        List<Book> books = userDao.getBookByFilter(filter);
         for (Book book : books) {
             System.out.println(book);
         }
+        return books;
     }
-
+    /**
+     * Main author: Eljesa Mesi
+     * Other contributors: Wiktor Teter
+     *
+     */
     private static void findAllBooksAndConvertToJSON() throws DaoException {
-        List<Book> books = BookStore.userDao.findAllBooks();  // Fetch all books
-        String json = ((MySqlBooksDao) BookStore.userDao).convertListToJSON(books);  // Convert to JSON
+        List<Book> books = userDao.findAllBooks();
+        String json = ((MySqlBooksDao) userDao).convertListToJSON(books);
         System.out.println("JSON representation of all books:");
-        System.out.println(json);  // Print JSON
+        System.out.println(json);
     }
-
+    /**
+     * Main author: Eljesa Mesi
+     * Other contributors: Wiktor Teter
+     *
+     */
     private static void convertBookByIDToJson(int id) throws DaoException {
-        Book book = BookStore.userDao.getBookByID(id);
+        Book book = userDao.getBookByID(id);
         if (book != null) {
-            String json = ((MySqlBooksDao) BookStore.userDao).convertEntityToJSON(book);
+            String json = ((MySqlBooksDao) userDao).convertEntityToJSON(book);
             System.out.println("JSON representation of the book:");
             System.out.println(json);
         } else {
@@ -279,96 +319,77 @@ class ClientHandler implements Runnable {
 
     @Override
     public void run() {
-        String request;
         try {
+            String request;
             while ((request = socketReader.readLine()) != null) {
-                System.out.println("Server: (ClientHandler): Read command from client " + clientNumber + ": " + request);
-
-                if (request.equalsIgnoreCase("display all")) {
-                    try {
-                        List<Book> books = BookStore.userDao.findAllBooks();
-                        String json = ((MySqlBooksDao) BookStore.userDao).convertListToJSON(books);
-                        socketWriter.println(json);
-                    } catch (DaoException e) {
-                        socketWriter.println("Error: " + e.getMessage());
-                    }
-                }
-
-                if (request.startsWith("add book ")) {
-                    String jsonInput = request.substring(9); // Assuming the JSON starts after "add book "
-
-                    try {
-                        int idIndex = jsonInput.indexOf("\"id\":") + 5;
-                        int id = Integer.parseInt(jsonInput.substring(idIndex, jsonInput.indexOf(',', idIndex)).trim());
-
-                        int titleIndex = jsonInput.indexOf("\"title\":") + 9;
-                        String title = jsonInput.substring(titleIndex, jsonInput.indexOf('\"', titleIndex + 1));
-
-                        int authorIndex = jsonInput.indexOf("\"author\":") + 10;
-                        String author = jsonInput.substring(authorIndex, jsonInput.indexOf('\"', authorIndex + 1));
-
-                        int priceIndex = jsonInput.indexOf("\"price\":") + 8;
-                        float price = Float.parseFloat(jsonInput.substring(priceIndex, jsonInput.indexOf('}', priceIndex)).trim());
-
-                        BookStore.userDao.insertBook(id, title, author, price);
-                        socketWriter.println("{\"success\": \"Book added successfully.\"}");
-                    } catch (Exception e) {
-                        socketWriter.println("{\"error\": \"Failed to add book: " + e.getMessage() + "\"}");
-                    }
-                }
-
-                if(request.startsWith("delete book ")) {
-                    try {
-                        int id = Integer.parseInt(request.substring(12).trim());
-                        Book book = BookStore.userDao.deleteBookByID(id);
-                        if (book != null) {
-                            socketWriter.println("Book deleted: " + book);
-                        } else {
-                            socketWriter.println("No book found with ID: " + id);
-                        }
-                    } catch (NumberFormatException e) {
-                        socketWriter.println("Error: Invalid ID format");
-                    } catch (DaoException e) {
-                        socketWriter.println("Error accessing database");
-                    }
-                }
-
-
-                if (request.startsWith("display ")) {
-                    try {
-                        int id = Integer.parseInt(request.substring(8).trim());
-                        Book book = BookStore.userDao.getBookByID(id);
-                        if (book != null) {
-                            String json = ((MySqlBooksDao) BookStore.userDao).convertEntityToJSON(book);
-                            socketWriter.println(json);
-                        } else {
-                            socketWriter.println("No book found with ID: " + id);
-                        }
-                    } catch (NumberFormatException e) {
-                        socketWriter.println("Error: Invalid ID format");
-                    } catch (DaoException e) {
-                        socketWriter.println("Error accessing database");
-                    }
-                }
-
-                else if (request.startsWith("quit")) {
-                    socketWriter.println("Goodbye.");
-                    break;
-                } else {
-                    socketWriter.println("Sorry, I don't understand");
-                }
+                System.out.println("Server: Read command from client: " + request);
+                processRequest(request);
             }
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
-            try {
-                socketWriter.close();
-                socketReader.close();
-                clientSocket.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            closeResources();
         }
     }
 
+    private void processRequest(String request) {
+        try {
+            if (request.startsWith("display all")) {
+                List<Book> books = BookStore.userDao.findAllBooks();
+                String json = ((MySqlBooksDao) BookStore.userDao).convertListToJSON(books);
+                socketWriter.println(json);
+            } else if (request.startsWith("display ")) {
+                int id = Integer.parseInt(request.substring(8).trim());
+                Book book = BookStore.userDao.getBookByID(id);
+                String json = book != null ? ((MySqlBooksDao) BookStore.userDao).convertEntityToJSON(book) : "No book found with ID: " + id;
+                socketWriter.println(json);
+            } else if (request.startsWith("add book ")) {
+                String jsonInput = request.substring(9); // Assuming the JSON starts after "add book "
+
+                try {
+                    int idIndex = jsonInput.indexOf("\"id\":") + 5;
+                    int id = Integer.parseInt(jsonInput.substring(idIndex, jsonInput.indexOf(',', idIndex)).trim());
+
+                    int titleIndex = jsonInput.indexOf("\"title\":") + 9;
+                    String title = jsonInput.substring(titleIndex, jsonInput.indexOf('\"', titleIndex + 1));
+
+                    int authorIndex = jsonInput.indexOf("\"author\":") + 10;
+                    String author = jsonInput.substring(authorIndex, jsonInput.indexOf('\"', authorIndex + 1));
+
+                    int priceIndex = jsonInput.indexOf("\"price\":") + 8;
+                    float price = Float.parseFloat(jsonInput.substring(priceIndex, jsonInput.indexOf('}', priceIndex)).trim());
+
+                    BookStore.userDao.insertBook(id, title, author, price);
+                    socketWriter.println("{\"success\": \"Book added successfully.\"}");
+                } catch (Exception e) {
+                    socketWriter.println("{\"error\": \"Failed to add book: " + e.getMessage() + "\"}");
+                }
+            }
+
+            else if (request.startsWith("delete book ")) {
+                int id = Integer.parseInt(request.substring(12).trim());
+                BookStore.userDao.deleteBookByID(id);
+                socketWriter.println("Book deleted with ID: " + id);
+            } else if (request.equals("quit")) {
+                socketWriter.println("Goodbye.");
+            } else {
+                socketWriter.println("Sorry, I don't understand");
+            }
+        } catch (Exception e) {
+            socketWriter.println("Error processing request: " + e.getMessage());
+        }
+    }
+
+
+
+
+    private void closeResources() {
+        try {
+            if (socketReader != null) socketReader.close();
+            if (socketWriter != null) socketWriter.close();
+            if (clientSocket != null) clientSocket.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 }
